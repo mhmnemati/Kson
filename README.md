@@ -3,6 +3,27 @@ A simple c language json parser
 
 this version only supports string value types
 
+# Functions
+
+```
+void kson_new();
+        allocates heap memory for json parsed data
+        
+void kson_parse(Kson*);
+        parse the json text and copy it's data to Kson
+        
+void kson_pack(Kson*,char**);
+        pack the json data into json text
+        
+char* kson_get(Kson*,char*);
+        find the key value if not found return NULL
+        
+void kson_put(Kson**,char*,char*);
+        put the key value
+        
+void kson_remove(Kson**,char*);
+        remove key
+```
 
 
 # Example
