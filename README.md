@@ -30,6 +30,8 @@ int main() {
     kson_pack(kson,&json_string);
 
     printf("%s\n",json_string);
+    
+    kson_free(kson);
 
     return 0;
 }
