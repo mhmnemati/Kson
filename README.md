@@ -7,7 +7,7 @@ this version only supports string value types
 
 ```
 Kson* kson_new();
-        allocates heap memory for json parsed data
+        allocates heap memory for parsed json data
         
 void kson_parse(Kson*);
         parse the json text and copy it's data to Kson
