@@ -52,11 +52,10 @@ void kson_string_pack(char **kson_string){
 }
 
 void kson_parse(char *kson_pack , Kson *kson){
-    char buffer[2];
     Kson *next_kson = kson;
-    buffer[1] = '\0';
     char *key = malloc(sizeof(char)*strlen(kson_pack));
     char *value = malloc(sizeof(char)*strlen(kson_pack));
+    int i_cursor = 0;
     int is_inner_key = 0; // -> 0 , 1 , 2 => 0 -> when not in block , 1 -> when getting key , 2 -> when in block but out of key
     int is_inner_value = 0; // -> 0 , 1 => 0 -> when not in value , 1 -> when in value
     for(int cursor = 0 ; cursor < strlen(kson_pack) ; cursor++){
@@ -68,11 +67,13 @@ void kson_parse(char *kson_pack , Kson *kson){
         }else if(is_inner_key == 1){
             if(kson_pack[cursor] == '\"' && kson_pack[cursor-1] != '\\'){
                 is_inner_key = 2;
+                *(key+i_cursor) = '\0';
+                i_cursor = 0;
                 // end of key
             }else{
                 // in key
-                buffer[0] = kson_pack[cursor];
-                strcat(key,buffer);
+                *(key+i_cursor) = kson_pack[cursor];
+                i_cursor++;
             }
         }else{
             if(is_inner_value == 0){
@@ -81,12 +82,14 @@ void kson_parse(char *kson_pack , Kson *kson){
                 }
             }else{
                 if(kson_pack[cursor] == '\"' && kson_pack[cursor-1] != '\\'){
+                    *(value+i_cursor) = '\0';
                     is_inner_value = 0;
                     is_inner_key = 0;
+                    i_cursor = 0;
                     // end of value
                     // add block
-//                    realloc(key,sizeof(char)*strlen(key));
-//                    realloc(value,sizeof(char)*strlen(value));
+                    realloc(key,sizeof(char)*strlen(key));
+                    realloc(value,sizeof(char)*strlen(value));
                     kson_string_parse(&key);
                     kson_string_parse(&value);
                     next_kson->key = key;
@@ -97,8 +100,8 @@ void kson_parse(char *kson_pack , Kson *kson){
                     value = malloc(sizeof(char)*strlen(kson_pack));
                 }else{
                     // in value
-                    buffer[0] = kson_pack[cursor];
-                    strcat(value,buffer);
+                    *(value+i_cursor) = kson_pack[cursor];
+                    i_cursor++;
                 }
             }
 
@@ -127,16 +130,17 @@ void kson_pack(Kson *kson , char **kson_pack){
     strcat(*kson_pack,"}");
 }
 
-char *kson_get(struct Kson *kson , const char *key){
+void kson_get(struct Kson *kson , const char *key,char **value){
     Kson *swap = NULL;
     do{
         swap = kson->next;
         if(strcmp(kson->key,key) == 0){
-            return kson->value;
+            (*value) = malloc(sizeof(char)*strlen(kson->value));
+            strcpy(*value,kson->value);
+            break;
         }
         kson = swap;
     } while(kson->next != NULL);
-    return NULL;
 }
 
 void kson_put(struct Kson **kson , const char *key , const char *value){

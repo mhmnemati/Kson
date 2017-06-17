@@ -16,7 +16,7 @@ void kson_parse(char *kson_pack , struct Kson *kson);
 
 void kson_pack(struct Kson *kson , char **kson_pack);
 
-char *kson_get(struct Kson *kson , const char *key);
+void kson_get(struct Kson *kson , const char *key,char **value);
 
 void kson_put(struct Kson **kson , const char *key , const char *value);
 
