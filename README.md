@@ -6,7 +6,7 @@ this version only supports string value types
 # Functions
 
 ```
-void kson_new();
+Kson* kson_new();
         allocates heap memory for json parsed data
         
 void kson_parse(Kson*);
