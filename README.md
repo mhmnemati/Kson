@@ -15,7 +15,7 @@ void kson_parse(Kson*);
 void kson_pack(Kson*,char**);
         pack the json data into json text
         
-char* kson_get(Kson*,char*);
+void kson_get(Kson*,char*,char**);
         find the key value if not found return NULL
         
 void kson_put(Kson**,char*,char*);
@@ -40,7 +40,11 @@ int main() {
 
     kson_parse(json_text,kson);
 
-    printf("Key_1 = %s\n",kson_get(kson,"Key_1"));
+    char *val = NULL;
+    
+    kson_get(kson,"Key_1",&val);
+    
+    printf("Key_1 = %s\n",val);
 
     char *json_string = NULL;
 
